@@ -5,14 +5,16 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 from polls.models import Question, Choice
+from django.views import View
 
-def index(request):
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
-    context = {
-        "current_datetime": timezone.localtime(),
-        "latest_question_list": latest_question_list
-        }
-    return render(request, "index.html", context)
+
+# def index(request):
+#     latest_question_list = Question.objects.order_by("-pub_date")[:5]
+#     context = {
+#         "current_datetime": timezone.localtime(),
+#         "latest_question_list": latest_question_list
+#         }
+#     return render(request, "index.html", context)
 
 def detail(request, question_id):
     question = Question.objects.get(pk=question_id)
@@ -35,3 +37,9 @@ def vote(request, question_id):
         choice.votes += 1
         choice.save()
         return redirect("detail", question_id=question_id)
+
+class IndexView(View):
+    def get(self, request):
+        question_list = Question.objects.order_by("-pub_date")
+        context = {"question_list": question_list}
+        return render(request, "index.html", context)
