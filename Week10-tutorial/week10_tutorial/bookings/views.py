@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.db.models import Q
 
 from bookings.models import Room, Staff, Booking
+from bookings.models import Booking
+from bookings.forms import BookingForm
 
 class BookingList(View):
 
@@ -53,28 +55,3 @@ class BookingDelete(View):
         return redirect("booking-list")
     
 
-
-from bookings.models import Booking
-from bookings.forms import BookingForm
-
-
-
-class BookingCreate(View):
-
-    def get(self, request):
-        form = BookingForm()
-        return render(request, "booking.html", {
-            "form": form,
-        })
-
-    def post(self, request):
-        form = BookingForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            return redirect('booking-list')
-
-        return render(request, "booking.html", {
-            "form": form
-        })
-...

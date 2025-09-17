@@ -20,42 +20,45 @@ Create Student
 
       <div class="grid sm:grid-cols-2 gap-4 form-control">
         <div class="">
-          <label for="{{ form.student_id.id_for_label }}" class="block text-sm font-medium text-gray-700">Student ID</label>
-          {{ form.student_id }}
+          <label for="{{ stdform.student_id.id_for_label }}" class="block text-sm font-medium text-gray-700">Student ID</label>
+          {{ stdform.student_id }}
         </div>
 
         <div>
-          <label for="{{ form.faculty.id_for_label }}" class="block text-sm font-medium text-gray-700">Faculty</label>
-          {{ form.faculty }}
+          <label for="{{ stdform.faculty.id_for_label }}" class="block text-sm font-medium text-gray-700">Faculty</label>
+          {{ stdform.faculty }}
         </div>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-4 form-control">
         <div>
-          <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">First Name</label>
-          {{ form.first_name }}
+          <label for="{{ stdform.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">First Name</label>
+          {{ stdform.first_name }}
         </div>
         <div>
           <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Last Name</label>
-          {{ form.last_name }}
+          {{ stdform.last_name }}
         </div>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-4 form-control">
         <div>
-          <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">Email</label>
-          {{ form.email }}
+          <label for="{{ proform.email.id_for_label }}" class="block text-sm font-medium text-gray-700">Email</label>
+          {{ proform.email }}
+
+          {{ proform.email.errors }}
+
         </div>
         <div>
-          <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Phone</label>
-          {{ form.phone_number }}
+          <label for="{{ proform.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Phone</label>
+          {{ proform.phone_number }}
         </div>
       </div>
 
       <div class="form-control">
         <div>
-          <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700">Address</label>
-          {{ form.address }}
+          <label for="{{ proform.address.id_for_label }}" class="block text-sm font-medium text-gray-700">Address</label>
+          {{ proform.address }}
         </div>
 
         <p class="text-xs text-gray-400 mt-1">
@@ -65,8 +68,8 @@ Create Student
 
       <div class="form-control">
         <div class="[&>select]:h-48 ">
-          <label for="{{ form.enrolled_sections.id_for_label }}" class="block text-sm font-medium text-gray-700">Select Sections</label>
-          {{ form.enrolled_sections }}
+          <label for="{{ stdform.enrolled_sections.id_for_label }}" class="block text-sm font-medium text-gray-700">Select Sections</label>
+          {{ stdform.enrolled_sections }}
         </div>
 
         <p class="text-xs text-gray-400 mt-1">ปล่อยว่างได้ ถ้ายังไม่ลงทะเบียนวิชา</p>

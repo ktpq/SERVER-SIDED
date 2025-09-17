@@ -32,11 +32,6 @@ class BookingForm(ModelForm):
             raise ValidationError(
                     "End time cannot be before start time"
                 )
-    def clean_room(self):
-        data = self.cleaned_data["room"]
-        if data.room_types == "Executive Office":
-            raise ValidationError("")
-            
 
 
         bookings = Booking.objects.filter(

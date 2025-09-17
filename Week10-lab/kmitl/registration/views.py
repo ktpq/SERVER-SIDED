@@ -4,8 +4,8 @@ from registration.models import *
 from django.db.models import Count, Q, F, Value
 from django.db.models.functions import Concat
 from django.http import HttpResponse
-
-from registration.forms import StudentForm
+from django.views import View
+from registration.forms import StudentForm, StudentProfileForm, CourseForm, SectionForm
 
 # Create your views here.
 def student_list(request):
@@ -79,66 +79,120 @@ def course_list(request):
     })
 
 
+
 # def create_student(request):
-#     faculties =  Faculty.objects.all()
-#     sections =  Section.objects.all()
-#     return render(request,"create_student.html", context={
-#         "faculties": faculties,
-#         "sections": sections
+#     # faculties =  Faculty.objects.all()
+#     # sections =  Section.objects.all()
+
+#     if request.method == "POST":  
+#         form = StudentForm(request.POST)
+#         if form.is_valid():
+#             # valid
+#             cd = form.cleaned_data
+
+#             newStudent = Student.objects.create(
+#                 student_id = cd["student_id"],
+#                 first_name = cd["first_name"],
+#                 last_name = cd["last_name"],
+#                 faculty = cd["faculty"]
+#             )
+
+#             newProfile = StudentProfile.objects.create(
+#                 student = newStudent,
+#                 email = cd["email"],
+#                 phone_number = cd["phone_number"],
+#                 address = cd["address"]
+#             )
+
+#             newStudent.enrolled_sections.set(cd["enrolled_sections"])
+#             newStudent.save()
+            
+#             return redirect("student_list")
+#     else:
+#         form = StudentForm()
+#     return render(request, "create_student.html", context={
+#         "form": form
 #     })
 
-# def create(request):
-#     student_id1 = request.POST.get("student_id")
-#     faculty1 = request.POST.get("faculty")
-#     fn1 = request.POST.get("first_name")
-#     ln1 = request.POST.get("last_name")
-#     email1 = request.POST.get("email")
-#     phone1 = request.POST.get("phone_number")
-#     address1 = request.POST.get("address")
-#     sections1 = request.POST.getlist("section_ids")
-
-#     fac = Faculty.objects.get(id = faculty1)
-#     st1 = Student.objects.create(student_id = student_id1,first_name = fn1,last_name = ln1,faculty=fac)
-#     stp1 = StudentProfile.objects.create(student =st1,email = email1,phone_number = phone1,address = address1)
-
-#     for i in sections1:
-#           sec = Section.objects.get(id = i)
-#           st1.enrolled_sections.add(sec)
-#     return redirect("/registration/students")
-
 def create_student(request):
-    # faculties =  Faculty.objects.all()
-    # sections =  Section.objects.all()
-
-    if request.method == "POST":  
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            # valid
-            cd = form.cleaned_data
-
-            newStudent = Student.objects.create(
-                student_id = cd["student_id"],
-                first_name = cd["first_name"],
-                last_name = cd["last_name"],
-                faculty = cd["faculty"]
-            )
-
-            newProfile = StudentProfile.objects.create(
-                student = newStudent,
-                email = cd["email"],
-                phone_number = cd["phone_number"],
-                address = cd["address"]
-            )
-
-            newStudent.enrolled_sections.set(cd["enrolled_sections"])
-            newStudent.save()
-            
-            return redirect("student_list")
+    if request.method == "POST":
+        stdform = StudentForm(request.POST)
+        proform = StudentProfileForm(request.POST)
+        if stdform.is_valid() and proform.is_valid():
+            student = stdform.save()
+            profile = proform.save(commit = False)
+            profile.student = student
+            profile.save()
+            return redirect('student_list')
+        
     else:
-        form = StudentForm()
-    return render(request, "create_student.html", context={
-        "form": form
+        # method GET
+        stdform = StudentForm()
+        proform = StudentProfileForm()
+    return render(request, "create_student.html", {"stdform": stdform, "proform": proform}) 
+
+def create_course(request):
+    if request.method == "POST":
+        c_form = CourseForm(request.POST)
+        s_form = SectionForm(request.POST)
+        if c_form.is_valid() and s_form.is_valid():
+            course = c_form.save()
+            section = s_form.save(commit=False)
+            section.course = course
+            section.save()
+            return redirect('course_list')
+    else:
+        # method get
+        c_form = CourseForm()
+        s_form = SectionForm()
+    return render(request, "create_course.html", { "cform": c_form, "sform": s_form })
+
+def update_course(request, course_code):
+    crs = Course.objects.get(course_code = course_code)
+    sec = Section.objects.filter(course = crs).first()
+    
+    if request.method == "POST":
+        course_form = CourseForm(request.POST, instance=crs)
+        section_form = SectionForm(request.POST, instance=sec)
+        if course_form.is_valid() and section_form.is_valid():
+            course = course_form.save()
+            section = section_form.save(commit=False)
+            section.course = course
+            section.save()
+            return redirect('course_list')
+        else:
+            print(course_form.errors)
+            print(section_form.errors)
+    else:
+        course_form = CourseForm(instance=crs)
+        section_form = SectionForm(instance=sec)
+    return render(request, "update_course.html", {
+        "cform": course_form,
+        "sform": section_form,
+        "course": crs
     })
+    # else:
+        # method get
+        
+        # print(course_code)
+        # course = Course.objects.get(course_code = course_code)
+        # section = Section.objects.filter(course = course).first()
+        # c_form = CourseForm(request.POST, )
+        # s_form = SectionForm()
+        
+    # return render(request, "create_course.html", { "cform": c_form, "sform": s_form })
+
+# course = Course.objects.get(course_code = course_code)
+#     section = Section.objects.filter(course = course).first()
+
+#     if request.method == "POST":
+#         course_form = CourseForm(request.POST, instance=course)
+#         section_form = SectionForm(request.POST, instance=section)
+
+#         if course_form.is_valid() and section_form.is_valid():
+#             c_form = course_form.save()
+#             s_form = section_form.save(commit=False)
+#             s_form.course = 
 
 
 def update_student(request, student_id):
