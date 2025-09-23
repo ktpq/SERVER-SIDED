@@ -75,7 +75,9 @@ Create Student
         <p class="text-xs text-gray-400 mt-1">ปล่อยว่างได้ ถ้ายังไม่ลงทะเบียนวิชา</p>
       </div>
 
-      <input type="file" name="myfile">
+      <input type="file" name="image" id="fileInput" accept="image/*">
+      <img id="previewImage" src="#" alt="Preview" class="mt-3 w-40 h-40 object-cover rounded-lg border hidden">
+
 
       <div class="flex items-center justify-end gap-3 pt-2">
         <button type="reset" class="px-4 py-2 rounded-lg border">Cancel</button>
@@ -83,4 +85,24 @@ Create Student
       </div>
     </form>
   </div>
+
+  <script>
+      document.getElementById("fileInput").addEventListener("change", function (event) {
+        const file = event.target.files[0]; // ไฟล์ที่เลือก
+        if (file) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            const preview = document.getElementById("previewImage");
+            preview.src = e.target.result;   // แปลงไฟล์เป็น base64 แล้วใส่ลง src
+            preview.classList.remove("hidden"); // ทำให้ img โผล่มา
+          };
+
+          reader.readAsDataURL(file); // อ่านไฟล์เป็น Data URL
+        }
+      });
+  </script>
 {% endblock %}
+
+
+

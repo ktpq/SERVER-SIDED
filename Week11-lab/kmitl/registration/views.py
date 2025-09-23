@@ -84,7 +84,7 @@ def course_list(request):
 def create_student(request):
     if request.method == "POST":
         stdform = StudentForm(request.POST)
-        proform = StudentProfileForm(request.POST)
+        proform = StudentProfileForm(request.POST, request.FILES)
         if stdform.is_valid() and proform.is_valid():
             student = stdform.save()
             profile = proform.save(commit = False)
@@ -103,10 +103,10 @@ def update_student(request, student_id):
     print(student_id)
     student = Student.objects.get(student_id=student_id)
     profile = StudentProfile.objects.get(student=student)
-
+    
     if request.method == "POST":
         stdform = StudentForm(request.POST, instance=student)
-        proform = StudentProfileForm(request.POST, instance=profile)
+        proform = StudentProfileForm(request.POST, request.FILES, instance=profile)
 
         if stdform.is_valid() and proform.is_valid():
             stdform.save()
@@ -121,7 +121,8 @@ def update_student(request, student_id):
     return render(request, "update_student.html", {
         "stdform": stdform,
         "proform": proform,
-        "student_id": student_id
+        "student_id": student_id,
+        "profile": profile
     })
 
 

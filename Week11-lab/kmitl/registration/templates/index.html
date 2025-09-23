@@ -76,9 +76,9 @@
               <tr class="{% if student.enrolled_sections.count == 0 %} text-red-500 {% endif %}{% if forloop.counter|divisibleby:'2' %} bg-gray-100 {% endif %} hover:bg-orange-50 transition">
                 <td class="px-4 py-3">
                   {% if student.studentprofile.image %}
-                    มีรูป
+                    <img src="{{ student.studentprofile.image.url }}" alt="" width="70">
                     {% else %}
-                    <img src="{% static 'images/no-image.png' %}" alt="" width="80">
+                    <img src="/media/images/no-image.png" alt="" width="70">
                   {% endif %}
                     
                 </td>
@@ -117,5 +117,3 @@
 {% block script %}
 <script src="{% static 'index.js' %}"></script>
 {% endblock %}
-
-

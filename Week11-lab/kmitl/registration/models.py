@@ -78,7 +78,7 @@ class StudentProfile(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=10, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    image = models.FileField(upload_to="images/", blank=True, null=True)
+    image = models.ImageField(upload_to="images/", blank=True, null=False)
 
-    def __str__(self):
-        return f"Profile of {self.student.first_name}"
+    # def __str__(self):
+    #     return f"Profile of {self.student.first_name}"
