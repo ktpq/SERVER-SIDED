@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Create Course
+{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="p-6 max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-orange-500 mb-6">Create New
+            Course</h1>
+
+        <form method="post" action="{% url 'create_course' %}" class="space-y-6 bg-white p-6 rounded-xl border border-orange-100 shadow">
+            {% csrf_token %}
+            {% if courseForm.non_field_errors or sectionForm.non_field_errors %}
+                <div class="bg-red-100 text-red-600 rounded px-4 py-2">
+                    {{ courseForm.non_field_errors }}
+                    {{ sectionForm.non_field_errors }}
+                </div>
+            {% endif %}
+            <!-- Course Info -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold text-gray-700">Course Information</h2>
+                <div class="grid sm:grid-cols-2 gap-4 form-control">
+                    <div>
+                        {{ courseForm.course_code.errors }}
+                        <label for="{{ courseForm.course_code.id_for_label }}" class="block text-sm font-medium text-gray-700">Course code</label>
+                        {{ courseForm.course_code }}
+                    </div>
+
+                    <div>
+                        {{ courseForm.credits.errors }}
+                        <label for="{{ courseForm.credits.id_for_label }}" class="block text-sm font-medium text-gray-700">Credits</label>
+                        {{ courseForm.credits }}
+                    </div>
+
+                </div>
+                <div class="grid sm:grid-cols-1 gap-4 form-control">
+                    <div>
+                        {{ courseForm.course_name.errors }}
+                        <label for="{{ courseForm.course_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Course name</label>
+                        {{ courseForm.course_name }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Info -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold text-gray-700">Section Information</h2>
+                {% comment %} {{ sectionFormSet.management_form }} {% endcomment %}
+                {% comment %} {% for form in sectionForm %} {% endcomment %}
+                <div class="border rounded-md p-4 mb-4">
+                    <div class="grid sm:grid-cols-3 gap-4 form-control">
+                        <div>
+                            {{ sectionForm.section_number.errors }}
+                            <label for="{{ sectionForm.section_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Section number</label>
+                            {{ sectionForm.section_number }}
+                        </div>
+    
+                        <div>
+                            {{ sectionForm.semester.errors }}
+                            <label for="{{ sectionForm.semester.id_for_label }}" class="block text-sm font-medium text-gray-700">Semester</label>
+                            {{ sectionForm.semester }}
+                        </div>
+    
+                        <div>
+                            {{ sectionForm.professor.errors }}
+                            <label
+                                for="{{ sectionForm.professor.id_for_label }}"
+                                class="block text-sm font-medium text-gray-700">Professor</label>
+                            {{ sectionForm.professor }}
+                        </div>
+                    </div>
+                    <div class="grid sm:grid-cols-3 gap-4 form-control">
+                        <div>
+                            {{ sectionForm.day_of_week.errors }}
+                            <label
+                                for="{{ sectionForm.day_of_week.id_for_label }}"
+                                class="block text-sm font-medium text-gray-700">Day of week</label>
+                                {{ sectionForm.day_of_week }}
+                        </div>
+    
+                        <div class="grid grid-cols-2 gap-4 form-control">
+                            <div>
+                                {{ sectionForm.start_time.errors }}
+                                <label for="{{ sectionForm.start_time.id_for_label }}" class="block text-sm font-medium text-gray-700">Start time</label>
+                                {{ sectionForm.start_time }}
+                            </div>
+                            <div>
+                                {{ sectionForm.end_time.errors }}
+                                <label
+                                    for="{{ sectionForm.end_time.id_for_label }}"
+                                    class="block text-sm font-medium text-gray-700">End time</label>
+                                {{ sectionForm.end_time }}
+                            </div>
+                        </div>
+    
+                        <div>
+                            {{ sectionForm.capacity.errors }}
+                            <label
+                                for="{{ sectionForm.capacity.id_for_label }}"
+                                class="block text-sm font-medium text-gray-700">Capacity</label>
+                            {{ sectionForm.capacity }}
+                        </div>
+                    </div>
+                </div>
+                
+                {% comment %} {% endfor %} {% endcomment %}
+            </div>
+
+            <button
+                type="submit"
+                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-md">
+                Save Change
+            </button>
+        </form>
+    </div>
+{% endblock %}
