@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from account.views import simple_upload, model_form_upload
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('simple_upload/', simple_upload, name="simple"),
+    path('model_form_upload/', model_form_upload, name="model")
 ]

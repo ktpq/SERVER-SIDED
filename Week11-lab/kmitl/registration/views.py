@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.views import View
 from registration.forms import StudentForm, StudentProfileForm, CourseForm, SectionForm
 from django.core.files.storage import FileSystemStorage
+from django.db import transaction
 
 # Create your views here.
 def student_list(request):
@@ -83,15 +84,23 @@ def course_list(request):
 
 def create_student(request):
     if request.method == "POST":
-        stdform = StudentForm(request.POST)
-        proform = StudentProfileForm(request.POST, request.FILES)
-        if stdform.is_valid() and proform.is_valid():
-            student = stdform.save()
-            profile = proform.save(commit = False)
-            profile.student = student
-            profile.save()
-            return redirect('student_list')
-        
+        try:
+            with transaction.atomic():
+                stdform = StudentForm(request.POST)
+                proform = StudentProfileForm(request.POST, request.FILES)
+                if stdform.is_valid():
+                    student = stdform.save()
+                    if proform.is_valid():
+                        profile = proform.save(commit = False)
+                        profile.student = student
+                        profile.save()
+                        return redirect('student_list')
+                    else:
+                        raise ValueError("Profileform is invalid")
+                else:
+                    raise ValueError("StudentForm is invalid")
+        except Exception as e:
+            print(e)
     else:
         # method GET
         stdform = StudentForm()
@@ -105,25 +114,36 @@ def update_student(request, student_id):
     profile = StudentProfile.objects.get(student=student)
     
     if request.method == "POST":
-        stdform = StudentForm(request.POST, instance=student)
-        proform = StudentProfileForm(request.POST, request.FILES, instance=profile)
+        try:
+            with transaction.atomic():
+                stdform = StudentForm(request.POST, instance=student)
+                proform = StudentProfileForm(request.POST, request.FILES, instance=profile)
 
-        if stdform.is_valid() and proform.is_valid():
-            stdform.save()
-            profile = proform.save(commit=False)
-            profile.student = student
-            profile.save()
-            return redirect("student_list")
+                if stdform.is_valid():
+                    stdform.save()
+                    if proform.is_valid():
+                        profile = proform.save(commit=False)
+                        profile.student = student
+                        profile.save()
+                        return redirect("student_list")
+                    else:
+                        raise ValueError("Invalid studentProfile form")
+                else:
+                    raise ValueError("Invalid studentForm")
+        except Exception as e:
+            print("Transaction error: ", e)
+                
+            
     else:
         stdform = StudentForm(instance=student)
         proform = StudentProfileForm(instance=profile)
 
     return render(request, "update_student.html", {
-        "stdform": stdform,
-        "proform": proform,
-        "student_id": student_id,
-        "profile": profile
-    })
+            "stdform": stdform,
+            "proform": proform,
+            "student_id": student_id,
+            "profile": profile
+        })
 
 
 

@@ -17,11 +17,14 @@ class StudentProfileForm(ModelForm):
         model = StudentProfile
         # fields = "__all__"
         exclude = ["student"]
+        widgets = {
+            "image": FileInput(attrs={"class":"hidden"})
+        }
     def clean_email(self):
         cleaned_data = self.clean()
         email = cleaned_data.get("email")
         if not email.endswith("@kmitl.ac.th"):
-            raise ValidationError("Email must end with @kmitl.ac.th")
+            return False
         return email
     
 class CourseForm(ModelForm):
